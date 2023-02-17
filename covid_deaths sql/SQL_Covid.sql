@@ -10,30 +10,30 @@ select location, date, total_cases, new_cases, total_deaths, population
 from portfolio..covid_deaths
 order by 1,2
 
---смотрим общее кол-во заболеваний -смертей
---вероятность смерти если ты заразишься в какой-то стране
+--СЃРјРѕС‚СЂРёРј РѕР±С‰РµРµ РєРѕР»-РІРѕ Р·Р°Р±РѕР»РµРІР°РЅРёР№ -СЃРјРµСЂС‚РµР№
+--РІРµСЂРѕСЏС‚РЅРѕСЃС‚СЊ СЃРјРµСЂС‚Рё РµСЃР»Рё С‚С‹ Р·Р°СЂР°Р·РёС€СЊСЃСЏ РІ РєР°РєРѕР№-С‚Рѕ СЃС‚СЂР°РЅРµ
 select location, date, total_cases, total_deaths, (CAST(total_deaths AS float) / CAST(total_cases AS float)) * 100.0 AS DeathPercentage
 from portfolio..covid_deaths
 where location like '%armenia%'
 order by 1,2
 
 
---смотрим общее кол-во случаев заболевания по сравнению с населением
---какой процент населения заразился ковитдом
+--СЃРјРѕС‚СЂРёРј РѕР±С‰РµРµ РєРѕР»-РІРѕ СЃР»СѓС‡Р°РµРІ Р·Р°Р±РѕР»РµРІР°РЅРёСЏ РїРѕ СЃСЂР°РІРЅРµРЅРёСЋ СЃ РЅР°СЃРµР»РµРЅРёРµРј
+--РєР°РєРѕР№ РїСЂРѕС†РµРЅС‚ РЅР°СЃРµР»РµРЅРёСЏ Р·Р°СЂР°Р·РёР»СЃСЏ РєРѕРІРёС‚РґРѕРј
 select location, date, population, total_cases, (CAST(total_cases AS float) / CAST(population AS float)) * 100.0 AS Percentage_infection_population
 from portfolio..covid_deaths
 where location like '%armenia%'
 order by 1,2
 
 
--- смотрим на страны с самым высоким уровнем инфицированияч епо сравнению с населением
+-- СЃРјРѕС‚СЂРёРј РЅР° СЃС‚СЂР°РЅС‹ СЃ СЃР°РјС‹Рј РІС‹СЃРѕРєРёРј СѓСЂРѕРІРЅРµРј РёРЅС„РёС†РёСЂРѕРІР°РЅРёСЏС‡ РµРїРѕ СЃСЂР°РІРЅРµРЅРёСЋ СЃ РЅР°СЃРµР»РµРЅРёРµРј
 select location, population, max(total_cases) as higest_infection_count, max((CAST(total_cases AS float) / CAST(population AS float))) * 100.0 AS percentage_infection_population
 from portfolio..covid_deaths
 --where location like '%armenia%'
 group by location, population
 order by Percentage_infection_population desc
 
--- показывает страны с самым высоким кол-вом на душу населения 
+-- РїРѕРєР°Р·С‹РІР°РµС‚ СЃС‚СЂР°РЅС‹ СЃ СЃР°РјС‹Рј РІС‹СЃРѕРєРёРј РєРѕР»-РІРѕРј РЅР° РґСѓС€Сѓ РЅР°СЃРµР»РµРЅРёСЏ  
 select location, max(cast(total_deaths as float)) as total_death_count	
 from portfolio..covid_deaths
 --where location like '%armenia%'
@@ -41,7 +41,7 @@ where continent is not null
 group by location
 order by total_death_count desc
 
--- -- показываем континенты с самым высоким числом смертей
+-- -- РїРѕРєР°Р·С‹РІР°РµРј РєРѕРЅС‚РёРЅРµРЅС‚С‹ СЃ СЃР°РјС‹Рј РІС‹СЃРѕРєРёРј С‡РёСЃР»РѕРј СЃРјРµСЂС‚РµР№
 
 select continent, max(cast(total_deaths as float)) as total_death_count	
 from portfolio..covid_deaths
@@ -50,7 +50,7 @@ where continent is not null
 group by continent
 order by total_death_count desc
 
--- глобальные цифры 
+-- РіР»РѕР±Р°Р»СЊРЅС‹Рµ С†РёС„СЂС‹ 
 select sum(cast(new_cases as float)) as new_cases, sum(cast(new_deaths as float)) as total_deaths,SUM(cast(new_deaths as float)) /SUM(cast(New_Cases as float))* 100 as DeathPercentage
 from portfolio..covid_deaths
 --where location like '%armenia%'
@@ -59,7 +59,7 @@ where continent is not null
 order by 1,2
 
 
--- общая численность населения в сравнении с скользящим значинием вакцинированных
+-- РѕР±С‰Р°СЏ С‡РёСЃР»РµРЅРЅРѕСЃС‚СЊ РЅР°СЃРµР»РµРЅРёСЏ РІ СЃСЂР°РІРЅРµРЅРёРё СЃ СЃРєРѕР»СЊР·СЏС‰РёРј Р·РЅР°С‡РёРЅРёРµРј РІР°РєС†РёРЅРёСЂРѕРІР°РЅРЅС‹С…
 with Pop_VS_Vac (continent, location, date,population, new_vaccinations, rolling_people_vacctinated)
 as
 (
@@ -77,7 +77,7 @@ select *, (rolling_people_vacctinated/population)*100
 from Pop_VS_Vac
 
 
--- временная таблица
+-- РІСЂРµРјРµРЅРЅР°СЏ С‚Р°Р±Р»РёС†Р°
 drop table if exists #precent_population_vaccination
 create table #precent_population_vaccination
 (
@@ -103,8 +103,7 @@ join portfolio..covid_deaths vac
 	select *, (rolling_people_vaccinated/population)*100
 from #precent_population_vaccination
 
-
--- СОЗДАДИМ ПРЕДСТАВЛЕНИЕ ДАННЫХ ДЛЯ ПОСЛЕДУЮЩЕЙ ВИЗУАЛИЗАЦИИ
+-- РЎРћР—Р”РђР”РРњ РџР Р•Р”РЎРўРђР’Р›Р•РќРР• Р”РђРќРќР«РҐ Р”Р›РЇ РџРћРЎР›Р•Р”РЈР®Р©Р•Р™ Р’РР—РЈРђР›РР—РђР¦РР
 
 create VIEW precent_population_vaccination as
 select dea.continent, dea.location, dea.date, population,new_vaccinations
